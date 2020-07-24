@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.mycriminallintent.R;
 import com.example.mycriminallintent.model.Crime;
@@ -43,5 +45,16 @@ public class CrimeListFragment extends Fragment {
     private void findViews(View view){
         mRecyclerView=view.findViewById(R.id.recycler_view_crimes);
     }
-   
+    private class CrimeHolder extends RecyclerView.ViewHolder{
+
+        private TextView mTextViewTitle;
+        private TextView mTextViewDate;
+        private ImageView mImageViewSolved;
+        public CrimeHolder(@NonNull View itemView) {
+            super(itemView);
+            mTextViewTitle=itemView.findViewById(R.id.list_row_crime_title);
+            mTextViewDate=itemView.findViewById((R.id.list_row_crime_date));
+            mImageViewSolved=itemView.findViewById(R.id.imgview_solved);
+        }
+    }
 }
