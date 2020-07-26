@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +47,7 @@ public class CrimeListFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_crime_list, container, false);
         findViews(view);
+        //RecyclerView Responsibility : Positioning . set recyclerView to listFragment layout
         mRecyclerView.setLayoutManager((new LinearLayoutManager(getActivity())));
         updateUI();
         return view;
@@ -55,6 +57,7 @@ public class CrimeListFragment extends Fragment {
         mRecyclerView = view.findViewById(R.id.recycler_view_crimes);
     }
 
+    //hold Views References
     private class CrimeHolder extends RecyclerView.ViewHolder {
 
         private TextView mTextViewTitle;
@@ -71,7 +74,10 @@ public class CrimeListFragment extends Fragment {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(getActivity(), CrimeDetailActivity.class);
+//                    Intent intent = new Intent(getActivity(), CrimeDetailActivity.class);
+                    //intent.putExtra("CrimeId",mCrime.getId());//send uuid to CrimeDetailActivity and read information from repository in crimeDetailActivity
+                   //there is an android convention that  write a method in activity to get extra's
+                    Intent intent = CrimeDetailActivity.newIntent(getActivity(),mCrime.getId());
                     startActivity(intent);
                 }
             });
@@ -87,6 +93,7 @@ public class CrimeListFragment extends Fragment {
 
     private class CrimeAdapter extends RecyclerView.Adapter<CrimeHolder> {
 
+        public static final String TAG = "CLF";
         private List<Crime> mCrimes;
 
         public CrimeAdapter(List<Crime> crimes) {
@@ -96,6 +103,8 @@ public class CrimeListFragment extends Fragment {
         @NonNull
         @Override
         public CrimeHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            Log.d(TAG, "onCreateViewHolder");
+            // first I write 107 line but I found I need a view so I write line 106,105
             LayoutInflater inflater = LayoutInflater.from(getActivity());
             View view = inflater.inflate(R.layout.list_row_crime, parent, false);
             CrimeHolder crimeHolder = new CrimeHolder(view);
@@ -103,7 +112,8 @@ public class CrimeListFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull CrimeHolder holder, int position) {
+        public void onBindViewHolder(@NonNull CrimeHolder holder, int position) {//this viewHolder is returned from onCreateViewHolder
+            Log.d(TAG, "onBindViewHolder " + position);
             Crime crime = mCrimes.get(position);
             holder.bindCrime(crime);
         }
@@ -114,11 +124,11 @@ public class CrimeListFragment extends Fragment {
         }
     }
 
-    private void updateUI() {
+    private void updateUI() { //connect adapter to RecyclerView
         List<Crime> crimes = mRepository.getList();
         if (mCrimeAdapter == null) {
             mCrimeAdapter = new CrimeAdapter(crimes);
-            mRecyclerView.setAdapter(mCrimeAdapter);
+            mRecyclerView.setAdapter(mCrimeAdapter);//connect recyclerView to adapter
         } else {
             mCrimeAdapter.notifyDataSetChanged();
         }

@@ -47,7 +47,7 @@ public class CrimeRepository implements RepositoryInterface<Crime> {
     }
 
     @Override
-    public void update(Crime crime) {
+    public synchronized void update(Crime crime) {//synchronized tell s you that if two component want to update repository this process can't do at the same time > threat subject
         Crime updateCrime = get(crime.getId());
         updateCrime.setTitle(crime.getTitle());
         updateCrime.setDate(crime.getDate());
