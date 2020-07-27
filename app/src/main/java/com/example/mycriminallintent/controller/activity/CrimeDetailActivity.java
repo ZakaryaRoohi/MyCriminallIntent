@@ -17,9 +17,9 @@ public class CrimeDetailActivity extends SingleFragmentActivity {
 
     /**
      * every component that want to start activity must
-     *     create It's intent from this method
-     *      this activity tells that everyOne want to start
-     *       me should start with my role
+     * create It's intent from this method
+     * this activity tells that everyOne want to start
+     * me should start with my role
      *
      * @param context Context of src
      * @param crimeId this activity needs a crime Id to work
@@ -27,13 +27,18 @@ public class CrimeDetailActivity extends SingleFragmentActivity {
      */
     public static Intent newIntent(Context context, UUID crimeId) {
         Intent intent = new Intent(context, CrimeDetailActivity.class);
-        intent.putExtra(EXTRA_CRIME_ID,crimeId);//UUID is serializable and parsable
+        intent.putExtra(EXTRA_CRIME_ID, crimeId);//UUID is serializable and parsable
         return intent;
     }
 
 
     @Override
     public Fragment createFragment() {
-        return new CrimeDetailFragment();
+        CrimeDetailFragment crimeDetailFragment = new CrimeDetailFragment();
+        UUID crimeId = (UUID) getIntent().getSerializableExtra(EXTRA_CRIME_ID);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("CrimeId", crimeId);
+        crimeDetailFragment.setArguments(bundle);
+        return crimeDetailFragment;
     }
 }
