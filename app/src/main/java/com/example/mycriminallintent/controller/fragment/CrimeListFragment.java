@@ -145,6 +145,26 @@ public class CrimeListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        /**
+         * this has  very bad performance because every time that come back from
+         * CrimeDetailFragment drop that Ui and new another one.
+         * magas ro ba katusha zadan
+         * what should I do?????????????//
+         * don't new Adapter.make adapter as field.create one adapter and only bind its view holders
+         * before change updateUI method was:
+         *
+         * List<Crime> crimes = mRepository.getList;
+         * CrimeAdapter adapter = new CrimeAdapter(crimes);
+         * mRecyclerView.setAdapter(adapter);
+         *
+         * after Change use: .notifyDataSetChanged();
+         *  List<Crime> crimes = mRepository.getList();
+         *         if (mCrimeAdapter == null) {
+         *             mCrimeAdapter = new CrimeAdapter(crimes);
+         *             mRecyclerView.setAdapter(mCrimeAdapter);//connect recyclerView to adapter
+         *         } else {
+         *             mCrimeAdapter.notifyDataSetChanged();}
+         */
         updateUI();
     }
 }
