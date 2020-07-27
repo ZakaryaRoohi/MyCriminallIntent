@@ -5,11 +5,14 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 
 import com.example.mycriminallintent.R;
@@ -50,7 +53,7 @@ public class CrimeDetailFragment extends Fragment {
 //        UUID crimeId = (UUID) getActivity().getIntent().getSerializableExtra(CrimeDetailActivity.EXTRA_CRIME_ID);
 
 
-        UUID crimeId = (UUID) getArguments().getSerializable("CrimeId");
+        UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
         mCrime = mRepository.get(crimeId);
     }
 
@@ -78,6 +81,7 @@ public class CrimeDetailFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_crime_detail, container, false);
         findViews(view);
+        setListeners();
         initViews();
         return view;
     }
@@ -99,5 +103,43 @@ public class CrimeDetailFragment extends Fragment {
         mCheckBoxSolved.setChecked(mCrime.isSolved());
         mButtonDate.setText(mCrime.getDate().toString());
         mButtonDate.setEnabled(false);
+    }
+
+    /**
+     * One the best way to save object Automaticaly is "OnPause" 100%  safe
+     */
+    @Override
+    public void onPause() {
+        super.onPause();
+        updateCrime();
+    }
+
+    private void updateCrime() {
+        mRepository.update(mCrime);
+    }
+
+    private void setListeners() {
+        mEditTextCrimeTitle.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                mCrime.setTitle(charSequence.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        mCheckBoxSolved.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                mCrime.setSolved(checked);
+            }
+        });
     }
 }
