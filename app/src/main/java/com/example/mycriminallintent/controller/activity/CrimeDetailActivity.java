@@ -31,6 +31,7 @@ public class CrimeDetailActivity extends SingleFragmentActivity {
         return intent;
     }
 
+
     @Override
     public Fragment createFragment() {
         return new CrimeDetailFragment();
