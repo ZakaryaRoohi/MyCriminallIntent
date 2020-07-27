@@ -23,6 +23,7 @@ import java.util.UUID;
 public class CrimeDetailFragment extends Fragment {
 
     public static final String BUNDLE_CRIME = "BundleCrime";
+    public static final String ARG_CRIME_ID = "CrimeId";
     private EditText mEditTextCrimeTitle;
     private Button mButtonDate;
     private CheckBox mCheckBoxSolved;
@@ -38,18 +39,37 @@ public class CrimeDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mRepository = CrimeRepository.getInstance();
-        /* get extra crimeId that sent from CrimeListFragment
+        /**
+         get extra crimeId that sent from CrimeListFragment
          this is very very bad Wrong we didn't observe(Regrading-comply) Single responsibility
          this fragment maybe use another activity . it should not dependent on CrimeDetailActivity
-        fragment never should be dependent on one Activity
-        this fragment isn't reusable
-        activity should read extras  and send to fragment*/
-
+         fragment never should be dependent on one Activity
+         this fragment isn't reusable
+         activity should read extras  and send to fragment
+         */
 //        UUID crimeId = (UUID) getActivity().getIntent().getSerializableExtra(CrimeDetailActivity.EXTRA_CRIME_ID);
 
 
         UUID crimeId = (UUID) getArguments().getSerializable("CrimeId");
         mCrime = mRepository.get(crimeId);
+    }
+
+    /**
+     * every want to start fragment should use this method and
+     * nobody can't use fragment constractor
+     * Using factory pattern to create this fragment. every class that want
+     * to create this fragment should Always call this method "only"
+     *
+     * @param crimeId this fragment need CrimeId to work
+     * @return new CrimeDetailFragment
+     */
+    public static CrimeDetailFragment newInstance(UUID crimeId) {
+
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_CRIME_ID, crimeId);
+        CrimeDetailFragment fragment = new CrimeDetailFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override

@@ -41,6 +41,14 @@ public class CrimeListFragment extends Fragment {
         mRepository = CrimeRepository.getInstance();
     }
 
+    public static CrimeListFragment newInstance() {
+
+        Bundle args = new Bundle();
+
+        CrimeListFragment fragment = new CrimeListFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

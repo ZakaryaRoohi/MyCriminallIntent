@@ -19,6 +19,6 @@ public class CrimeListActivity extends SingleFragmentActivity {
 
     @Override
     public Fragment createFragment() {
-        return  new CrimeListFragment();
+        return  CrimeListFragment.newInstance();
     }
 }

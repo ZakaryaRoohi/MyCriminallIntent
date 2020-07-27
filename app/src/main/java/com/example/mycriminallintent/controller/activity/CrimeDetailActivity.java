@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.mycriminallintent.controller.fragment.CrimeDetailFragment;
+import com.example.mycriminallintent.controller.fragment.CrimeListFragment;
 
 import java.util.UUID;
 
@@ -20,7 +21,6 @@ public class CrimeDetailActivity extends SingleFragmentActivity {
      * create It's intent from this method
      * this activity tells that everyOne want to start
      * me should start with my role
-     *
      * @param context Context of src
      * @param crimeId this activity needs a crime Id to work
      * @return
@@ -34,11 +34,18 @@ public class CrimeDetailActivity extends SingleFragmentActivity {
 
     @Override
     public Fragment createFragment() {
-        CrimeDetailFragment crimeDetailFragment = new CrimeDetailFragment();
+
         UUID crimeId = (UUID) getIntent().getSerializableExtra(EXTRA_CRIME_ID);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("CrimeId", crimeId);
-        crimeDetailFragment.setArguments(bundle);
-        return crimeDetailFragment;
+        /**
+         * this type of setArgument is not simply and illegible
+         * so we should  use factory method Design Pattern
+         * newInstance method in fragment
+         */
+//        CrimeDetailFragment crimeDetailFragment = new CrimeDetailFragment();
+////        Bundle bundle = new Bundle();
+////        bundle.putSerializable("CrimeId", crimeId);
+////        crimeDetailFragment.setArguments(bundle);
+////        return crimeDetailFragment;
+        return CrimeDetailFragment.newInstance(crimeId);
     }
 }
