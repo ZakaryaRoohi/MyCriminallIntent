@@ -141,4 +141,10 @@ public class CrimeListFragment extends Fragment {
             mCrimeAdapter.notifyDataSetChanged();
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
+    }
 }
