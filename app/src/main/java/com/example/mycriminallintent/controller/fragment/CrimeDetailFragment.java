@@ -1,6 +1,5 @@
 package com.example.mycriminallintent.controller.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,10 +16,9 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 
 import com.example.mycriminallintent.R;
-import com.example.mycriminallintent.controller.activity.CrimeDetailActivity;
 import com.example.mycriminallintent.model.Crime;
 import com.example.mycriminallintent.repository.CrimeRepository;
-import com.example.mycriminallintent.repository.RepositoryInterface;
+import com.example.mycriminallintent.repository.IRepository;
 
 import java.util.UUID;
 
@@ -32,7 +30,7 @@ public class CrimeDetailFragment extends Fragment {
     private Button mButtonDate;
     private CheckBox mCheckBoxSolved;
     private static int mCrimePosition;
-    private RepositoryInterface<Crime> mRepository;
+    private IRepository<Crime> mRepository;
     private Crime mCrime;
 
     public CrimeDetailFragment() {
@@ -56,7 +54,7 @@ public class CrimeDetailFragment extends Fragment {
 
         UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
         mCrime = mRepository.get(crimeId);
-        mCrimePosition = mRepository.getPosition(mCrime);
+//        mCrimePosition = mRepository.getPosition(mCrime);
     }
 
     /**

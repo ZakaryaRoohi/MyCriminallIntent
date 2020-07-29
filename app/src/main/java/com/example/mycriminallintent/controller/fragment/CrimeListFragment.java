@@ -12,22 +12,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.mycriminallintent.R;
 import com.example.mycriminallintent.controller.activity.CrimeDetailActivity;
+import com.example.mycriminallintent.controller.activity.CrimePagerActivity;
 import com.example.mycriminallintent.model.Crime;
 import com.example.mycriminallintent.repository.CrimeRepository;
-import com.example.mycriminallintent.repository.RepositoryInterface;
+import com.example.mycriminallintent.repository.IRepository;
 
 import java.util.List;
 
 public class CrimeListFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
-    private RepositoryInterface<Crime> mRepository;
+    private IRepository<Crime> mRepository;
     private CrimeAdapter mCrimeAdapter;
     private int mPosition;
 
@@ -116,11 +116,11 @@ public class CrimeListFragment extends Fragment {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mPosition = getAdapterPosition();
+//                    mPosition = getAdapterPosition();
 //                    Intent intent = new Intent(getActivity(), CrimeDetailActivity.class);
                     //intent.putExtra("CrimeId",mCrime.getId());//send uuid to CrimeDetailActivity and read information from repository in crimeDetailActivity
                     //there is an android convention that  write a method in activity to get extra's
-                    Intent intent = CrimeDetailActivity.newIntent(getActivity(), mCrime.getId());
+                    Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getId());
                     startActivity(intent);
                 }
             });
@@ -134,7 +134,7 @@ public class CrimeListFragment extends Fragment {
         }
     }
 
-    private class CrimeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private class CrimeAdapter extends RecyclerView.Adapter<CrimeHolder> {
 
         public static final String TAG = "CLF";
         private List<Crime> mCrimes;
@@ -154,39 +154,44 @@ public class CrimeListFragment extends Fragment {
 
         @NonNull
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public CrimeHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             Log.d(TAG, "onCreateViewHolder");
             // first I write 107 line but I found I need a view so I write line 106,105
+//            LayoutInflater inflater = LayoutInflater.from(getActivity());
+//
+//            View view;
+//            switch (viewType) {
+//                case 1:{
+//                    view = inflater.inflate(R.layout.list_row_crime, parent, false);
+//                    return new CrimeHolder(view);
+//                }
+//                case 0:{
+//                    view = inflater.inflate(R.layout.list_row_crime_second, parent, false);
+//                    return new CrimeHolder2(view);
+//
+//                }
+//            }
             LayoutInflater inflater = LayoutInflater.from(getActivity());
+            View view = inflater.inflate(R.layout.list_row_crime, parent, false);
 
-            View view;
-            switch (viewType) {
-                case 1:{
-                    view = inflater.inflate(R.layout.list_row_crime, parent, false);
-                    return new CrimeHolder(view);
-                }
-                case 0:{
-                    view = inflater.inflate(R.layout.list_row_crime_second, parent, false);
-                    return new CrimeHolder2(view);
-
-                }
-            }
             CrimeHolder crimeHolder = new CrimeHolder(view);
             return crimeHolder;
         }
 
         @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {//this viewHolder is returned from onCreateViewHolder
+        public void onBindViewHolder(@NonNull CrimeHolder holder, int position) {//this viewHolder is returned from onCreateViewHolder
             Log.d(TAG, "onBindViewHolder " + position);
+//            Crime crime = mCrimes.get(position);
+////            if (crime.isSolved()) {
+////                CrimeHolder crimeHold = (CrimeHolder) holder;
+////                crimeHold.bindCrime(crime);
+////            }
+////            else{
+////                CrimeHolder2 crimeHolder2 = (CrimeHolder2) holder;
+////                crimeHolder2.bindCrime(crime);
+////            }
             Crime crime = mCrimes.get(position);
-            if (crime.isSolved()) {
-                CrimeHolder crimeHold = (CrimeHolder) holder;
-                crimeHold.bindCrime(crime);
-            }
-            else{
-                CrimeHolder2 crimeHolder2 = (CrimeHolder2) holder;
-                crimeHolder2.bindCrime(crime);
-            }
+            holder.bindCrime(crime);
 
         }
 
