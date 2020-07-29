@@ -10,6 +10,7 @@ public class CrimeRepository implements RepositoryInterface<Crime> {
     private static final int NUMBER_OF_CRIMES = 100;
     private static CrimeRepository sCrimeRepository;
     private List<Crime> mCrimes;
+    private int position;
 
     public static CrimeRepository getInstance() {
         if (sCrimeRepository == null)
@@ -57,8 +58,8 @@ public class CrimeRepository implements RepositoryInterface<Crime> {
 
     @Override
     public void delete(Crime crime) {
-        for (int i = 0; i <mCrimes.size() ; i++) {
-            if(mCrimes.get(i).getId().equals(crime.getId())){
+        for (int i = 0; i < mCrimes.size(); i++) {
+            if (mCrimes.get(i).getId().equals(crime.getId())) {
                 mCrimes.remove(i);
                 return;
             }
@@ -68,11 +69,16 @@ public class CrimeRepository implements RepositoryInterface<Crime> {
 
     @Override
     public void insert(Crime crime) {
-mCrimes.add(crime);
+        mCrimes.add(crime);
     }
 
     @Override
     public void insertList(List<Crime> crimes) {
-mCrimes.addAll(crimes);
+        mCrimes.addAll(crimes);
+    }
+
+    @Override
+    public int getPosition(Crime crime) {
+        return mCrimes.indexOf(crime);
     }
 }

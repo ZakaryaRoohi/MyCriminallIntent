@@ -11,4 +11,5 @@ public interface RepositoryInterface<E> {
     void delete(E e);
     void insert(E e);
     void insertList(List<E> list);
+    int getPosition(E e);
 }

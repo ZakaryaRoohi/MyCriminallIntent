@@ -1,5 +1,6 @@
 package com.example.mycriminallintent.controller.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -30,7 +31,7 @@ public class CrimeDetailFragment extends Fragment {
     private EditText mEditTextCrimeTitle;
     private Button mButtonDate;
     private CheckBox mCheckBoxSolved;
-
+    private static int mCrimePosition;
     private RepositoryInterface<Crime> mRepository;
     private Crime mCrime;
 
@@ -55,6 +56,7 @@ public class CrimeDetailFragment extends Fragment {
 
         UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
         mCrime = mRepository.get(crimeId);
+        mCrimePosition = mRepository.getPosition(mCrime);
     }
 
     /**
@@ -112,6 +114,7 @@ public class CrimeDetailFragment extends Fragment {
     public void onPause() {
         super.onPause();
         updateCrime();
+
     }
 
     private void updateCrime() {
