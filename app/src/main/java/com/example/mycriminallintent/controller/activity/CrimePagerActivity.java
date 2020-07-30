@@ -26,18 +26,21 @@ import java.util.UUID;
 
 public class CrimePagerActivity extends AppCompatActivity {
 
-    private static final String EXTRA_CRIME_ID ="com.example.mycriminallintent.controller.activity.crimeId" ;
+    private static final String EXTRA_CRIME_ID = "com.example.mycriminallintent.controller.activity.crimeId";
     private ViewPager2 mCrimeViewPager;
     private IRepository mRepository;
     private Button mButtonFirst;
     private Button mButtonPrevious;
     private Button mButtonNext;
     private Button mButtonLast;
-public static Intent newIntent(Context context, UUID crimeId){
-    Intent intent  = new Intent(context, CrimePagerActivity.class);
-    intent.putExtra(EXTRA_CRIME_ID,crimeId);
-    return intent;
-}
+    private int currentPosition;
+
+    public static Intent newIntent(Context context, UUID crimeId) {
+        Intent intent = new Intent(context, CrimePagerActivity.class);
+        intent.putExtra(EXTRA_CRIME_ID, crimeId);
+        return intent;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,28 +48,34 @@ public static Intent newIntent(Context context, UUID crimeId){
         mRepository = CrimeRepository.getInstance();
         UUID crimeId = (UUID) getIntent().getSerializableExtra(EXTRA_CRIME_ID);
         int position = mRepository.getPosition(crimeId);
+        currentPosition = position;
         findViews();
         setUI(position);
         setClickListeners();
     }
-    private void setUI(int position){
-    FragmentStateAdapter fragmentStateAdapter =  new CrimeViewPagerAdapter(this,mRepository.getList());
-    mCrimeViewPager.setAdapter(fragmentStateAdapter);
-    //after set adapter
-    mCrimeViewPager.setCurrentItem(position);
-}
-    private void findViews(){
-    mCrimeViewPager = findViewById(R.id.crime_view_pager);
-    mButtonFirst = findViewById(R.id.button_first);
-    mButtonPrevious = findViewById(R.id.button_previous);
-    mButtonNext = findViewById(R.id.button_next);
-    mButtonLast = findViewById(R.id.button_last);
+
+    private void setUI(int position) {
+        FragmentStateAdapter fragmentStateAdapter = new CrimeViewPagerAdapter(this, mRepository.getList());
+        mCrimeViewPager.setAdapter(fragmentStateAdapter);
+        //after set adapter
+        currentPosition = position;
+        mCrimeViewPager.setCurrentItem(position);
     }
-    private  class CrimeViewPagerAdapter extends FragmentStateAdapter{
+
+    private void findViews() {
+        mCrimeViewPager = findViewById(R.id.crime_view_pager);
+        mButtonFirst = findViewById(R.id.button_first);
+        mButtonPrevious = findViewById(R.id.button_previous);
+        mButtonNext = findViewById(R.id.button_next);
+        mButtonLast = findViewById(R.id.button_last);
+    }
+
+    private class CrimeViewPagerAdapter extends FragmentStateAdapter {
         private List<Crime> mCrimes;
+
         public CrimeViewPagerAdapter(@NonNull FragmentActivity fragmentActivity, List<Crime> crimes) {
             super(fragmentActivity);
-            mCrimes=crimes;
+            mCrimes = crimes;
         }
 
         @NonNull
@@ -80,31 +89,40 @@ public static Intent newIntent(Context context, UUID crimeId){
             return mCrimes.size();
         }
     }
-    private void setClickListeners(){
 
-    mButtonFirst.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            setUI(0);
-        }
-    });
-    mButtonPrevious.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
+    private void setClickListeners() {
 
-        }
-    });
-    mButtonNext.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
+        mButtonFirst.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setUI(0);
+            }
+        });
+        mButtonPrevious.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (currentPosition == 0)
+                    setUI(mRepository.getList().size()-1);
+                else
+                    setUI(currentPosition - 1);
 
-        }
-    });
-    mButtonLast.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            setUI(mRepository.getList().size());
-        }
-    });
+            }
+        });
+        mButtonNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (currentPosition == mRepository.getList().size()-1)
+                    setUI(0);
+                else
+                    setUI(currentPosition + 1);
+
+            }
+        });
+        mButtonLast.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setUI(mRepository.getList().size());
+            }
+        });
     }
 }
