@@ -48,7 +48,7 @@ public class CrimePagerActivity extends AppCompatActivity {
         mRepository = CrimeRepository.getInstance();
         UUID crimeId = (UUID) getIntent().getSerializableExtra(EXTRA_CRIME_ID);
         int position = mRepository.getPosition(crimeId);
-        currentPosition = position;
+//        currentPosition = position;
         findViews();
         setUI(position);
         setClickListeners();
