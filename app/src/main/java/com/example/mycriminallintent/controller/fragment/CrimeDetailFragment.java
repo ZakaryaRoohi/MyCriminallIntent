@@ -1,9 +1,13 @@
 package com.example.mycriminallintent.controller.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.EditText;
 
 import com.example.mycriminallintent.R;
@@ -20,18 +25,32 @@ import com.example.mycriminallintent.model.Crime;
 import com.example.mycriminallintent.repository.CrimeRepository;
 import com.example.mycriminallintent.repository.IRepository;
 
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.UUID;
 
 public class CrimeDetailFragment extends Fragment {
 
     public static final String BUNDLE_CRIME = "BundleCrime";
     public static final String ARG_CRIME_ID = "CrimeId";
+    public static final String DIALOG_FRAGMENT_TAG = "Dialog";
+    public static final int DATE_PICKER_REQUEST_CODE = 0;
     private EditText mEditTextCrimeTitle;
     private Button mButtonDate;
+    private Button mButtonTime;
     private CheckBox mCheckBoxSolved;
     private static int mCrimePosition;
     private IRepository<Crime> mRepository;
     private Crime mCrime;
+    private Date mCrimeDate;
+    private Time mCrimeTime;
+
+    private DatePicker mDatePicker;
 
     public CrimeDetailFragment() {
         // Required empty public constructor
@@ -92,18 +111,23 @@ public class CrimeDetailFragment extends Fragment {
         outState.putSerializable(BUNDLE_CRIME, mCrime);
     }
 
+
+
     private void findViews(View view) {
         mEditTextCrimeTitle = view.findViewById(R.id.crime_title);
         mButtonDate = view.findViewById(R.id.crime_date);
+        mButtonTime=view.findViewById(R.id.crime_time);
         mCheckBoxSolved = view.findViewById(R.id.crime_solved);
     }
 
     private void initViews() {
         mEditTextCrimeTitle.setText(mCrime.getTitle());
         mCheckBoxSolved.setChecked(mCrime.isSolved());
-        mButtonDate.setText(mCrime.getDate().toString());
-        mButtonDate.setEnabled(false);
+        mButtonDate.setText( new SimpleDateFormat("MM/dd/yyyy").format(mCrime.getDate()));
+        mButtonTime.setText(new SimpleDateFormat("HH:mm:ss").format(mCrime.getDate()));
+
     }
+
 
     /**
      * One the best way to save object Automaticaly is "OnPause" 100%  safe
@@ -142,5 +166,31 @@ public class CrimeDetailFragment extends Fragment {
                 mCrime.setSolved(checked);
             }
         });
+        mButtonDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatePickerFragment datePickerFragment = DatePickerFragment.newInstance(mCrime.getDate());
+
+                //create parent-child relations between CrimeDetailFragment-DatePickerFragment
+                datePickerFragment.setTargetFragment(CrimeDetailFragment.this, DATE_PICKER_REQUEST_CODE);
+
+                datePickerFragment.show(getFragmentManager(), DIALOG_FRAGMENT_TAG);
+            }
+        });
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (resultCode != Activity.RESULT_OK || data == null)
+            return;
+
+        if (requestCode == DATE_PICKER_REQUEST_CODE) {
+            //get response from intent extra, which is user selected date
+            Date userSelectedDate = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_USER_SELECTED_DATE);
+
+            mCrime.setDate(userSelectedDate);
+            mButtonDate.setText( new SimpleDateFormat("MM/dd/yyyy").format(mCrime.getDate()));
+
+            updateCrime();
+        }
     }
 }
