@@ -7,7 +7,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -26,20 +25,19 @@ import com.example.mycriminallintent.repository.CrimeRepository;
 import com.example.mycriminallintent.repository.IRepository;
 
 import java.sql.Time;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.UUID;
 
 public class CrimeDetailFragment extends Fragment {
 
     public static final String BUNDLE_CRIME = "BundleCrime";
     public static final String ARG_CRIME_ID = "CrimeId";
-    public static final String DIALOG_FRAGMENT_TAG = "Dialog";
+    public static final String DATE_DIALOG_FRAGMENT_TAG = "DialogDate";
+    public static final String TIMER_DIALOG_FRAGMENT_TAG = "DialogTimer";
     public static final int DATE_PICKER_REQUEST_CODE = 0;
+    public static final int TIME_PICKER_REQUEST_CODE = 1;
+
     private EditText mEditTextCrimeTitle;
     private Button mButtonDate;
     private Button mButtonTime;
@@ -174,7 +172,15 @@ public class CrimeDetailFragment extends Fragment {
                 //create parent-child relations between CrimeDetailFragment-DatePickerFragment
                 datePickerFragment.setTargetFragment(CrimeDetailFragment.this, DATE_PICKER_REQUEST_CODE);
 
-                datePickerFragment.show(getFragmentManager(), DIALOG_FRAGMENT_TAG);
+                datePickerFragment.show(getFragmentManager(), DATE_DIALOG_FRAGMENT_TAG);
+            }
+        });
+        mButtonTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TimePickerFragment timePickerFragment = TimePickerFragment.newInstance(mCrime.getDate());
+                timePickerFragment.setTargetFragment(CrimeDetailFragment.this,TIME_PICKER_REQUEST_CODE);
+                timePickerFragment.show(getFragmentManager(), TIMER_DIALOG_FRAGMENT_TAG);
             }
         });
     }
@@ -189,6 +195,13 @@ public class CrimeDetailFragment extends Fragment {
 
             mCrime.setDate(userSelectedDate);
             mButtonDate.setText( new SimpleDateFormat("MM/dd/yyyy").format(mCrime.getDate()));
+
+            updateCrime();
+        }
+        if(requestCode == TIME_PICKER_REQUEST_CODE){
+            Date userSelectedDate  = (Date) data.getSerializableExtra(TimePickerFragment.EXTRA_USER_SELECTED_TIME);
+            mCrime.setDate(userSelectedDate);
+            mButtonTime.setText(new SimpleDateFormat("HH:mm:ss").format(mCrime.getDate()));
 
             updateCrime();
         }
