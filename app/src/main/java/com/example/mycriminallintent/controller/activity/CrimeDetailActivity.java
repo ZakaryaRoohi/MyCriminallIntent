@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.mycriminallintent.controller.fragment.CrimeDetailFragment;
 import com.example.mycriminallintent.controller.fragment.CrimeListFragment;
@@ -15,6 +16,7 @@ import java.util.UUID;
 public class CrimeDetailActivity extends SingleFragmentActivity {
 
     public static final String EXTRA_CRIME_ID = "com.example.mycriminallintent.controller.activity.extraCrimeId";
+    public static final String CDF = "createFragment";
 
     /**
      * every component that want to start activity must
@@ -34,7 +36,6 @@ public class CrimeDetailActivity extends SingleFragmentActivity {
 
     @Override
     public Fragment createFragment() {
-
         UUID crimeId = (UUID) getIntent().getSerializableExtra(EXTRA_CRIME_ID);
         /**
          * this type of setArgument is not simply and illegible

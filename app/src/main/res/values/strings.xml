@@ -7,4 +7,7 @@
     <string name="enter_a_title_for_the_crime">Enter a title for the crime.</string>
     <string name="title">Title</string>
     <string name="date_picker_title">Date Of Crime</string>
+    <string name="new_crime">New Crime</string>
+    <string name="show_subtitle">show subtitle</string>
+    <string name="subtitle_format">%1$d crimes</string>
 </resources>

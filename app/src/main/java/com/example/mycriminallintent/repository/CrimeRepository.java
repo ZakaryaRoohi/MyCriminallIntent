@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class CrimeRepository implements IRepository<Crime> {
-    private static final int NUMBER_OF_CRIMES = 100;
+    private static final int NUMBER_OF_CRIMES = 10;
     private static CrimeRepository sCrimeRepository;
     private List<Crime> mCrimes;
     private int position;

@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.mycriminallintent.R;
 import com.example.mycriminallintent.controller.fragment.CrimeListFragment;
@@ -16,6 +17,7 @@ public class CrimeListActivity extends SingleFragmentActivity {
         Intent intent = new Intent(context , CrimeListActivity.class);
         return intent;
     }
+
 
     @Override
     public Fragment createFragment() {
