@@ -1,6 +1,5 @@
 package com.example.mycriminallintent.controller.fragment;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -17,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -38,7 +38,10 @@ public class CrimeListFragment extends Fragment {
     private IRepository<Crime> mRepository;
     private CrimeAdapter mCrimeAdapter;
     private int mPosition;
-private LinearLayout mLinearLayoutEmpty;
+    private LinearLayout mLinearLayout1;
+    private LinearLayout mLinearLayout2;
+    private ImageButton mImageButtonAddCrime;
+
     private boolean mIsSubtitleVisible = false;
 
     public CrimeListFragment() {
@@ -55,6 +58,17 @@ private LinearLayout mLinearLayoutEmpty;
             mIsSubtitleVisible = savedInstanceState.getBoolean(BUNDLE_IS_SUBTITLE_VISIBLE, false);
 
 
+    }
+    private  void setClickListener(){
+        mImageButtonAddCrime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                mLinearLayout1.setVisibility(View.VISIBLE);
+//                mLinearLayout2.setVisibility(View.GONE);
+                addCrime();
+
+            }
+        });
     }
 
     public static CrimeListFragment newInstance() {
@@ -74,6 +88,8 @@ private LinearLayout mLinearLayoutEmpty;
         findViews(view);
         //RecyclerView Responsibility : Positioning . set recyclerView to listFragment layout
         mRecyclerView.setLayoutManager((new LinearLayoutManager(getActivity())));
+        mImageButtonAddCrime=view.findViewById(R.id.image_button_add_crime);
+
         updateUI();
         return view;
     }
@@ -134,42 +150,13 @@ private LinearLayout mLinearLayoutEmpty;
 
     private void findViews(View view) {
         mRecyclerView = view.findViewById(R.id.recycler_view_crimes);
-//        mLinearLayoutEmpty = view.findViewById(R.id.empty);
+        mLinearLayout2 = view.findViewById(R.id.layout2);
+        mLinearLayout1 = view.findViewById(R.id.layout1);
+        mImageButtonAddCrime=view.findViewById(R.id.image_button_add_crime);
+
     }
 
-    private class CrimeHolder2 extends RecyclerView.ViewHolder {
-        private TextView mTextViewTitle;
-        private TextView mTextViewDate;
-        private ImageView mImageViewSolved;
 
-        private Crime mCrime;
-
-        public CrimeHolder2(@NonNull View itemView) {
-            super(itemView);
-            mTextViewTitle = itemView.findViewById(R.id.list_row_crime_title);
-            mTextViewDate = itemView.findViewById((R.id.list_row_crime_date));
-            mImageViewSolved = itemView.findViewById(R.id.imgview_solved);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mPosition = getAdapterPosition();
-//                    Intent intent = new Intent(getActivity(), CrimeDetailActivity.class);
-                    //intent.putExtra("CrimeId",mCrime.getId());//send uuid to CrimeDetailActivity and read information from repository in crimeDetailActivity
-                    //there is an android convention that  write a method in activity to get extra's
-                    Intent intent = CrimeDetailActivity.newIntent(getActivity(), mCrime.getId());
-                    startActivity(intent);
-                }
-            });
-
-        }
-
-        public void bindCrime(Crime crime) {
-            mCrime = crime;
-            mTextViewTitle.setText(crime.getTitle());
-            mTextViewDate.setText(crime.getDate().toString());
-            mImageViewSolved.setVisibility(crime.isSolved() ? View.VISIBLE : View.INVISIBLE);
-        }
-    }
 
     //hold Views References
     private class CrimeHolder extends RecyclerView.ViewHolder {
@@ -293,10 +280,15 @@ private LinearLayout mLinearLayoutEmpty;
             mCrimeAdapter.notifyDataSetChanged();
         }
         updateSubtitle();
-        if (mRepository.getList().size() == 0){
-            Toast.makeText(getActivity(), "repository is cleared "+mRepository.getList().size(), Toast.LENGTH_SHORT).show();
-
+        if (mRepository.getList().size() == 0) {
+//            Toast.makeText(getActivity(), "repository is cleared "+mRepository.getList().size(), Toast.LENGTH_SHORT).show();
+            mLinearLayout1.setVisibility(View.GONE);
+            mLinearLayout2.setVisibility(View.VISIBLE);
+        } else if (mRepository.getList().size() != 0) {
+            mLinearLayout1.setVisibility(View.VISIBLE);
+            mLinearLayout2.setVisibility(View.GONE);
         }
+        setClickListener();
     }
 
     @Override
