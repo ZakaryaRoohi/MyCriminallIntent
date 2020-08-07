@@ -1,5 +1,6 @@
 package com.example.mycriminallintent.controller.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -17,7 +18,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mycriminallintent.R;
 import com.example.mycriminallintent.controller.activity.CrimeDetailActivity;
@@ -35,7 +38,7 @@ public class CrimeListFragment extends Fragment {
     private IRepository<Crime> mRepository;
     private CrimeAdapter mCrimeAdapter;
     private int mPosition;
-
+private LinearLayout mLinearLayoutEmpty;
     private boolean mIsSubtitleVisible = false;
 
     public CrimeListFragment() {
@@ -48,8 +51,8 @@ public class CrimeListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mRepository = CrimeRepository.getInstance();
         setHasOptionsMenu(true);
-        if(savedInstanceState!=null)
-            mIsSubtitleVisible = savedInstanceState.getBoolean(BUNDLE_IS_SUBTITLE_VISIBLE,false);
+        if (savedInstanceState != null)
+            mIsSubtitleVisible = savedInstanceState.getBoolean(BUNDLE_IS_SUBTITLE_VISIBLE, false);
 
 
     }
@@ -108,7 +111,7 @@ public class CrimeListFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean(BUNDLE_IS_SUBTITLE_VISIBLE,mIsSubtitleVisible);
+        outState.putBoolean(BUNDLE_IS_SUBTITLE_VISIBLE, mIsSubtitleVisible);
     }
 
     private void addCrime() {
@@ -131,6 +134,7 @@ public class CrimeListFragment extends Fragment {
 
     private void findViews(View view) {
         mRecyclerView = view.findViewById(R.id.recycler_view_crimes);
+//        mLinearLayoutEmpty = view.findViewById(R.id.empty);
     }
 
     private class CrimeHolder2 extends RecyclerView.ViewHolder {
@@ -286,9 +290,13 @@ public class CrimeListFragment extends Fragment {
             mCrimeAdapter = new CrimeAdapter(crimes);
             mRecyclerView.setAdapter(mCrimeAdapter);//connect recyclerView to adapter
         } else {
-            mCrimeAdapter.notifyItemChanged(mPosition);
+            mCrimeAdapter.notifyDataSetChanged();
         }
         updateSubtitle();
+        if (mRepository.getList().size() == 0){
+            Toast.makeText(getActivity(), "repository is cleared "+mRepository.getList().size(), Toast.LENGTH_SHORT).show();
+
+        }
     }
 
     @Override

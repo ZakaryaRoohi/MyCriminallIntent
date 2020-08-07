@@ -11,6 +11,9 @@ import androidx.fragment.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -20,6 +23,8 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 
 import com.example.mycriminallintent.R;
+import com.example.mycriminallintent.controller.activity.CrimeListActivity;
+import com.example.mycriminallintent.controller.activity.CrimePagerActivity;
 import com.example.mycriminallintent.model.Crime;
 import com.example.mycriminallintent.repository.CrimeRepository;
 import com.example.mycriminallintent.repository.IRepository;
@@ -68,7 +73,7 @@ public class CrimeDetailFragment extends Fragment {
          */
 //        UUID crimeId = (UUID) getActivity().getIntent().getSerializableExtra(CrimeDetailActivity.EXTRA_CRIME_ID);
 
-
+        setHasOptionsMenu(true);
         UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
         mCrime = mRepository.get(crimeId);
 //        mCrimePosition = mRepository.getPosition(mCrime);
@@ -109,31 +114,60 @@ public class CrimeDetailFragment extends Fragment {
         outState.putSerializable(BUNDLE_CRIME, mCrime);
     }
 
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_crime_detail, menu);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_item_delete_crime:
+                deleteCrime(mCrime);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void deleteCrime(Crime crime) {
+        IRepository repository = CrimeRepository.getInstance();
+        repository.delete(crime);
+        getActivity().finish();
+
+
+
+    }
+
+    private void closeFragment() {
+
+//        getActivity().getFragmentManager().beginTransaction().remove(this).commit();
+        getActivity().getFragmentManager().popBackStack();
+    }
 
     private void findViews(View view) {
         mEditTextCrimeTitle = view.findViewById(R.id.crime_title);
         mButtonDate = view.findViewById(R.id.crime_date);
-        mButtonTime=view.findViewById(R.id.crime_time);
+        mButtonTime = view.findViewById(R.id.crime_time);
         mCheckBoxSolved = view.findViewById(R.id.crime_solved);
     }
 
     private void initViews() {
         mEditTextCrimeTitle.setText(mCrime.getTitle());
         mCheckBoxSolved.setChecked(mCrime.isSolved());
-        mButtonDate.setText( new SimpleDateFormat("MM/dd/yyyy").format(mCrime.getDate()));
+        mButtonDate.setText(new SimpleDateFormat("MM/dd/yyyy").format(mCrime.getDate()));
         mButtonTime.setText(new SimpleDateFormat("HH:mm:ss").format(mCrime.getDate()));
 
     }
 
 
     /**
-     * One the best way to save object Automaticaly is "OnPause" 100%  safe
+     * One the best way to save object Automatically is "OnPause" 100%  safe
      */
     @Override
     public void onPause() {
         super.onPause();
-        updateCrime();
+//        updateCrime();
 
     }
 
@@ -179,11 +213,12 @@ public class CrimeDetailFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 TimePickerFragment timePickerFragment = TimePickerFragment.newInstance(mCrime.getDate());
-                timePickerFragment.setTargetFragment(CrimeDetailFragment.this,TIME_PICKER_REQUEST_CODE);
+                timePickerFragment.setTargetFragment(CrimeDetailFragment.this, TIME_PICKER_REQUEST_CODE);
                 timePickerFragment.show(getFragmentManager(), TIMER_DIALOG_FRAGMENT_TAG);
             }
         });
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (resultCode != Activity.RESULT_OK || data == null)
@@ -194,12 +229,12 @@ public class CrimeDetailFragment extends Fragment {
             Date userSelectedDate = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_USER_SELECTED_DATE);
 
             mCrime.setDate(userSelectedDate);
-            mButtonDate.setText( new SimpleDateFormat("MM/dd/yyyy").format(mCrime.getDate()));
+            mButtonDate.setText(new SimpleDateFormat("MM/dd/yyyy").format(mCrime.getDate()));
 
             updateCrime();
         }
-        if(requestCode == TIME_PICKER_REQUEST_CODE){
-            Date userSelectedDate  = (Date) data.getSerializableExtra(TimePickerFragment.EXTRA_USER_SELECTED_TIME);
+        if (requestCode == TIME_PICKER_REQUEST_CODE) {
+            Date userSelectedDate = (Date) data.getSerializableExtra(TimePickerFragment.EXTRA_USER_SELECTED_TIME);
             mCrime.setDate(userSelectedDate);
             mButtonTime.setText(new SimpleDateFormat("HH:mm:ss").format(mCrime.getDate()));
 
