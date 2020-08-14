@@ -18,6 +18,7 @@ import android.widget.Button;
 import com.example.mycriminallintent.R;
 import com.example.mycriminallintent.controller.fragment.CrimeDetailFragment;
 import com.example.mycriminallintent.model.Crime;
+import com.example.mycriminallintent.repository.CrimeDBRepository;
 import com.example.mycriminallintent.repository.CrimeRepository;
 import com.example.mycriminallintent.repository.IRepository;
 
@@ -45,7 +46,10 @@ public class CrimePagerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crime_pager);
-        mRepository = CrimeRepository.getInstance();
+
+//        mRepository = CrimeRepository.getInstance();
+        mRepository = CrimeDBRepository.getInstance(this);
+
         UUID crimeId = (UUID) getIntent().getSerializableExtra(EXTRA_CRIME_ID);
         int position = mRepository.getPosition(crimeId);
 //        currentPosition = position;
@@ -56,7 +60,9 @@ public class CrimePagerActivity extends AppCompatActivity {
 
     private void setUI(int position) {
         FragmentStateAdapter fragmentStateAdapter = new CrimeViewPagerAdapter(this, mRepository.getList());
+
         mCrimeViewPager.setAdapter(fragmentStateAdapter);
+
         //after set adapter
         currentPosition = position;
         mCrimeViewPager.setCurrentItem(position);
@@ -72,6 +78,7 @@ public class CrimePagerActivity extends AppCompatActivity {
 
     private class CrimeViewPagerAdapter extends FragmentStateAdapter {
         private List<Crime> mCrimes;
+
 
         public CrimeViewPagerAdapter(@NonNull FragmentActivity fragmentActivity, List<Crime> crimes) {
             super(fragmentActivity);

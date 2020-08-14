@@ -26,6 +26,7 @@ import com.example.mycriminallintent.R;
 import com.example.mycriminallintent.controller.activity.CrimeDetailActivity;
 import com.example.mycriminallintent.controller.activity.CrimePagerActivity;
 import com.example.mycriminallintent.model.Crime;
+import com.example.mycriminallintent.repository.CrimeDBRepository;
 import com.example.mycriminallintent.repository.CrimeRepository;
 import com.example.mycriminallintent.repository.IRepository;
 
@@ -37,7 +38,6 @@ public class CrimeListFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private IRepository<Crime> mRepository;
     private CrimeAdapter mCrimeAdapter;
-    private int mPosition;
     private LinearLayout mLinearLayout1;
     private LinearLayout mLinearLayout2;
     private ImageButton mImageButtonAddCrime;
@@ -52,7 +52,8 @@ public class CrimeListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mRepository = CrimeRepository.getInstance();
+        mRepository = CrimeDBRepository.getInstance(getActivity());
+//        mRepository = CrimeRepository.getInstance();
         setHasOptionsMenu(true);
         if (savedInstanceState != null)
             mIsSubtitleVisible = savedInstanceState.getBoolean(BUNDLE_IS_SUBTITLE_VISIBLE, false);
@@ -131,7 +132,8 @@ public class CrimeListFragment extends Fragment {
     }
 
     private void addCrime() {
-        IRepository repository = CrimeRepository.getInstance();
+        IRepository repository = CrimeDBRepository.getInstance(getActivity());
+//        IRepository repository = CrimeRepository.getInstance();
         Crime crime = new Crime();
         repository.insert(crime);
         Intent intent = CrimePagerActivity.newIntent(getActivity(), crime.getId());
@@ -198,6 +200,10 @@ public class CrimeListFragment extends Fragment {
         public static final String TAG = "CLF";
         private List<Crime> mCrimes;
 
+        private  void  setCrimes(List<Crime> crimes){
+            mCrimes= crimes;
+        }
+
         public CrimeAdapter(List<Crime> crimes) {
             mCrimes = crimes;
         }
@@ -215,21 +221,6 @@ public class CrimeListFragment extends Fragment {
         @Override
         public CrimeHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             Log.d(TAG, "onCreateViewHolder");
-            // first I write 107 line but I found I need a view so I write line 106,105
-//            LayoutInflater inflater = LayoutInflater.from(getActivity());
-//
-//            View view;
-//            switch (viewType) {
-//                case 1:{
-//                    view = inflater.inflate(R.layout.list_row_crime, parent, false);
-//                    return new CrimeHolder(view);
-//                }
-//                case 0:{
-//                    view = inflater.inflate(R.layout.list_row_crime_second, parent, false);
-//                    return new CrimeHolder2(view);
-//
-//                }
-//            }
             LayoutInflater inflater = LayoutInflater.from(getActivity());
             View view = inflater.inflate(R.layout.list_row_crime, parent, false);
 
@@ -240,15 +231,7 @@ public class CrimeListFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull CrimeHolder holder, int position) {//this viewHolder is returned from onCreateViewHolder
             Log.d(TAG, "onBindViewHolder " + position);
-//            Crime crime = mCrimes.get(position);
-////            if (crime.isSolved()) {
-////                CrimeHolder crimeHold = (CrimeHolder) holder;
-////                crimeHold.bindCrime(crime);
-////            }
-////            else{
-////                CrimeHolder2 crimeHolder2 = (CrimeHolder2) holder;
-////                crimeHolder2.bindCrime(crime);
-////            }
+
             Crime crime = mCrimes.get(position);
             holder.bindCrime(crime);
 
@@ -277,9 +260,11 @@ public class CrimeListFragment extends Fragment {
             mCrimeAdapter = new CrimeAdapter(crimes);
             mRecyclerView.setAdapter(mCrimeAdapter);//connect recyclerView to adapter
         } else {
+            mCrimeAdapter.setCrimes(crimes);
             mCrimeAdapter.notifyDataSetChanged();
         }
         updateSubtitle();
+
         if (mRepository.getList().size() == 0) {
 //            Toast.makeText(getActivity(), "repository is cleared "+mRepository.getList().size(), Toast.LENGTH_SHORT).show();
             mLinearLayout1.setVisibility(View.GONE);
@@ -315,5 +300,6 @@ public class CrimeListFragment extends Fragment {
          *             mCrimeAdapter.notifyDataSetChanged();}
          */
         updateUI();
+
     }
 }

@@ -22,11 +22,13 @@ import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.example.mycriminallintent.R;
 import com.example.mycriminallintent.controller.activity.CrimeListActivity;
 import com.example.mycriminallintent.controller.activity.CrimePagerActivity;
 import com.example.mycriminallintent.model.Crime;
+import com.example.mycriminallintent.repository.CrimeDBRepository;
 import com.example.mycriminallintent.repository.CrimeRepository;
 import com.example.mycriminallintent.repository.IRepository;
 
@@ -48,13 +50,9 @@ public class CrimeDetailFragment extends Fragment {
     private Button mButtonDate;
     private Button mButtonTime;
     private CheckBox mCheckBoxSolved;
-    private static int mCrimePosition;
+
     private IRepository<Crime> mRepository;
     private Crime mCrime;
-    private Date mCrimeDate;
-    private Time mCrimeTime;
-
-    private DatePicker mDatePicker;
 
     public CrimeDetailFragment() {
         // Required empty public constructor
@@ -63,7 +61,8 @@ public class CrimeDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mRepository = CrimeRepository.getInstance();
+        mRepository = CrimeDBRepository.getInstance(getActivity());
+//        mRepository = CrimeRepository.getInstance();
         /**
          get extra crimeId that sent from CrimeListFragment
          this is very very bad Wrong we didn't observe(Regrading-comply) Single responsibility
@@ -73,11 +72,9 @@ public class CrimeDetailFragment extends Fragment {
          activity should read extras  and send to fragment
          */
 //        UUID crimeId = (UUID) getActivity().getIntent().getSerializableExtra(CrimeDetailActivity.EXTRA_CRIME_ID);
-
         setHasOptionsMenu(true);
         UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
         mCrime = mRepository.get(crimeId);
-//        mCrimePosition = mRepository.getPosition(mCrime);
     }
 
     /**
@@ -105,6 +102,7 @@ public class CrimeDetailFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_crime_detail, container, false);
         findViews(view);
         setListeners();
+
         initViews();
         return view;
     }
@@ -132,18 +130,13 @@ public class CrimeDetailFragment extends Fragment {
     }
 
     private void deleteCrime(Crime crime) {
-        IRepository repository = CrimeRepository.getInstance();
+//        IRepository repository = CrimeRepository.getInstance();
+        IRepository repository = CrimeDBRepository.getInstance(getActivity());
+
         repository.delete(crime);
         getActivity().finish();
 
 
-
-    }
-
-    private void closeFragment() {
-
-//        getActivity().getFragmentManager().beginTransaction().remove(this).commit();
-        getActivity().getFragmentManager().popBackStack();
     }
 
     private void findViews(View view) {
@@ -168,9 +161,11 @@ public class CrimeDetailFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-//        updateCrime();
+
+        updateCrime();
 
     }
+
 
     private void updateCrime() {
         mRepository.update(mCrime);
@@ -186,13 +181,16 @@ public class CrimeDetailFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 mCrime.setTitle(charSequence.toString());
+                mCrime.setTitle(mEditTextCrimeTitle.getText().toString());
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
 
             }
+
         });
+
         mCheckBoxSolved.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
@@ -202,6 +200,7 @@ public class CrimeDetailFragment extends Fragment {
         mButtonDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 DatePickerFragment datePickerFragment = DatePickerFragment.newInstance(mCrime.getDate());
 
                 //create parent-child relations between CrimeDetailFragment-DatePickerFragment
@@ -241,5 +240,6 @@ public class CrimeDetailFragment extends Fragment {
 
             updateCrime();
         }
+
     }
 }
