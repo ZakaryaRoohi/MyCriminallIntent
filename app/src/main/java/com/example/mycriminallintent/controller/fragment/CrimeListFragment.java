@@ -60,12 +60,13 @@ public class CrimeListFragment extends Fragment {
 
 
     }
-    private  void setClickListener(){
+    private void setClickListener(){
         mImageButtonAddCrime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 //                mLinearLayout1.setVisibility(View.VISIBLE);
 //                mLinearLayout2.setVisibility(View.GONE);
+
                 addCrime();
 
             }

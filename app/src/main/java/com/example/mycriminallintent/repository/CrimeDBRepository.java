@@ -149,7 +149,8 @@ public class CrimeDBRepository implements IRepository<Crime> {
         values.put(CrimeDBSchema.CrimeTable.COLS.TITLE, crime.getTitle());
         values.put(CrimeDBSchema.CrimeTable.COLS.DATE, crime.getDate().getTime());
         values.put(CrimeDBSchema.CrimeTable.COLS.SOLVED, crime.isSolved() ? 1 : 0);
-
+        values.put(CrimeDBSchema.CrimeTable.COLS.SUSPECT, crime.getSuspect());
+        values.put(CrimeDBSchema.CrimeTable.COLS.SuspectPhoneNumber,crime.getSuspectPhoneNumber());
         return values;
     }
 }

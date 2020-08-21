@@ -12,6 +12,24 @@ public class Crime implements Serializable {
     private String mTitle;
     private Date mDate;
     private boolean mSolved;
+    private String mSuspect;
+    private String mSuspectPhoneNumber;
+
+    public String getSuspectPhoneNumber() {
+        return mSuspectPhoneNumber;
+    }
+
+    public void setSuspectPhoneNumber(String suspectPhoneNumber) {
+        mSuspectPhoneNumber = suspectPhoneNumber;
+    }
+
+    public String getSuspect() {
+        return mSuspect;
+    }
+
+    public void setSuspect(String suspect) {
+        mSuspect = suspect;
+    }
 
     public UUID getId(){return mId;}
     public String getTitle() {
@@ -45,19 +63,13 @@ public Crime() {
     }
 
 
-    public Crime(UUID id, String title, Date date, boolean solved) {
+    public Crime(UUID id, String title, Date date, boolean solved,String suspect ,String suspectPhoneNumber) {
         mId = id;
         mTitle = title;
         mDate = date;
         mSolved = solved;
+        mSuspect=suspect;
+        mSuspectPhoneNumber = suspectPhoneNumber;
     }
-    @Override
-    public String toString() {
-        return "Crime{" +
-                "mId=" + mId +
-                ", mTitle='" + mTitle + '\'' +
-                ", mDate=" + mDate +
-                ", mSolved=" + mSolved +
-                '}';
-    }
+
 }

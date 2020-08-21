@@ -26,13 +26,15 @@ public class CrimeBaseHelper extends SQLiteOpenHelper {
                 CrimeDBSchema.CrimeTable.COLS.UUID + " text," +
                 CrimeDBSchema.CrimeTable.COLS.TITLE + " text," +
                 CrimeDBSchema.CrimeTable.COLS.DATE + " long," +
-                CrimeDBSchema.CrimeTable.COLS.SOLVED + " integer" +
+                CrimeDBSchema.CrimeTable.COLS.SOLVED + " integer," +
+                CrimeDBSchema.CrimeTable.COLS.SUSPECT + " text," +
+                CrimeDBSchema.CrimeTable.COLS.SuspectPhoneNumber + " text" +
                 ");");
-        db.execSQL("CREATE TABLE " + UserDBSchema.NAME + "(" +
-                UserDBSchema.UserTable.COLS.USERNAME + " integer primary key autoincrement," +
-                UserDBSchema.UserTable.COLS.PASSWORD + " text" +
 
-                ");");
+//        db.execSQL("CREATE TABLE " + UserDBSchema.NAME + "(" +
+//                UserDBSchema.UserTable.COLS.USERNAME + " integer primary key autoincrement," +
+//                UserDBSchema.UserTable.COLS.PASSWORD + " text" +
+//                ");");
     }
 
     /**

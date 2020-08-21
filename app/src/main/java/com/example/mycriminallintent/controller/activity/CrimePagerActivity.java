@@ -49,7 +49,6 @@ public class CrimePagerActivity extends AppCompatActivity {
 
 //        mRepository = CrimeRepository.getInstance();
         mRepository = CrimeDBRepository.getInstance(this);
-
         UUID crimeId = (UUID) getIntent().getSerializableExtra(EXTRA_CRIME_ID);
         int position = mRepository.getPosition(crimeId);
 //        currentPosition = position;
@@ -109,7 +108,7 @@ public class CrimePagerActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (currentPosition == 0)
-                    setUI(mRepository.getList().size()-1);
+                    setUI(mRepository.getList().size() - 1);
                 else
                     setUI(currentPosition - 1);
 
@@ -118,7 +117,7 @@ public class CrimePagerActivity extends AppCompatActivity {
         mButtonNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (currentPosition == mRepository.getList().size()-1)
+                if (currentPosition == mRepository.getList().size() - 1)
                     setUI(0);
                 else
                     setUI(currentPosition + 1);
